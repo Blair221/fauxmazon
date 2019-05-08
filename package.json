@@ -1,0 +1,29 @@
+{
+  "name": "fauxmazon",
+  "version": "1.0.0",
+  "description": "fake amazon CLI app that interacts with a mysql database to display product information",
+  "main": "fauxmazon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blair221/fauxmazon.git"
+  },
+  "keywords": [
+    "node",
+    "mysql",
+    "javascript",
+    "database"
+  ],
+  "author": "Blair Brownlie-Edward",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Blair221/fauxmazon/issues"
+  },
+  "homepage": "https://github.com/Blair221/fauxmazon#readme",
+  "dependencies": {
+    "inquirer": "^6.3.1",
+    "mysql": "^2.17.1"
+  }
+}
