@@ -22,7 +22,8 @@ connection.query("select * from products", function(error, results) {
   if (error) {
     console.log("there was an error making that query");
   }
-
+  
+  
   console.table(results);
   inquirer
     .prompt([
@@ -47,6 +48,7 @@ connection.query("select * from products", function(error, results) {
           if (isNaN(value) === false) {
             return true;
           } else {
+            console.log('\nmake sure to input a number!');
             return false;
           }
         }
@@ -55,6 +57,11 @@ connection.query("select * from products", function(error, results) {
     .then(function(answers) {
       console.log(`The product you want to order is id: ${answers.product_id}`);
       console.log(`and you want to order ${answers.product_quant} of them`);
-      console.table(results);
+      for (let i = 0; i < results.length; i++) {
+          if (answers.product_id === results[i].item_id){
+          let element = results[i];
+          console.log(element);
+          }
+      }
     });
 });
