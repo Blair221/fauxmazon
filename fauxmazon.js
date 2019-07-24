@@ -25,6 +25,8 @@ connection.query("select * from products", function(error, results) {
   
   
   console.table(results);
+
+  
   inquirer
     .prompt([
       {
