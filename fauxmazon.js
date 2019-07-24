@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 
@@ -5,7 +6,7 @@ var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
   port: 3306,
-  password: "Stev!eg33",
+  password: process.env.MYSQL_PASSWORD,
   database: "fauxmazon_db"
 });
 
@@ -96,11 +97,11 @@ function productPrompt(items) {
 }
 
 
-function stockCheck(productId, inventory) {
-  for (var i = 0; i < inventory.length; i++) {
-    if (inventory[i].item_id === productId) {
+function stockCheck(productId, items) {
+  for (var i = 0; i < items.length; i++) {
+    if (items[i].item_id === productId) {
       // If a matching product is found, return the product
-      return inventory[i];
+      return items[i];
     }
   }
   // Otherwise return null
