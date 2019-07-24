@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 
@@ -37,64 +37,76 @@ function productPrompt(items) {
   inquirer
     .prompt([
       {
-        name: "product_id",
+        name: "input",
         type: "choice",
         message:
           "What is the id of the product you would like to order? (Exit with an e)",
         validate: function(value) {
-          if (!isNaN(value) || value === 'e') {
-            return true;
-          } 
+          return !isNaN(value) || value === "e";
+        }
+      }
+    ])
+    .then(function(value) {
+      if (value.input === "e") {
+        console.log("See ya later, alligator!");
+        process.exit(0);
+      }
+      var productId = parseInt(value.input);
+      var product = stockCheck(productId, items);
+
+      if (product) {
+        quantityPrompt(product);
+      }
+      else {
+        console.log("\nWe currently do not have that in our inventory");
+        queryDatabase(); 
+      }
+    });
+}
+
+function quantityPrompt(product) {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "quantity",
+        message: "How many would you like? [Exit with an e]",
+        validate: function(value) {
+          return value > 0 || value === "e";
         }
       }
     ])
     .then(function(value) {
       
-      if (value.choice === "e") {
+      if (value.quantity === "e") {
         console.log("See ya later, alligator!");
         process.exit(0);
       }
-      var productId = parseInt(value.choice);
-      var product = stockCheck(productId, items);
-
-      if (product) {
-        inquirer
-          .prompt([
-            {
-              type: "input",
-              name: "quantity",
-              message: "How many would you like? [Exit with an e]",
-              validate: function(value) {
-                if (value > 0 || value === "e") {
-                  return true;
-                }
-              }
-            }
-          ])
-          .then(function(value) {
-            if (value.quantity === "e") {
-              console.log("See ya later, alligator!");
-              process.exit(0);
-            }
-            var quantity = value.quantity;
-            if (quantity > product.stock) {
-              console.log("There ain't enough of these to go round, sorry bud!");
-              queryDatabase();
-            } else {
-              connection.query(
-                "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",
-                [quantity, product.item_id],
-                function(err, res) {
-                  // Let the user know the purchase was successful, re-run loadProducts
-                  console.log("\nSuccessfully purchased " + quantity + " " + product.product_name + "'s!");
-                  queryDatabase();
-                }
-              );
-            }
-          });
+      var quantity = parseInt(value.quantity);
+      if (quantity > product.stock) {
+        console.log("There ain't enough of these to go round, sorry bud!");
+        queryDatabase();
+      } 
+      else {
+        connection.query(
+          "UPDATE products SET stock = stock - ? WHERE item_id = ?",
+          [quantity, product.item_id],
+          function(err, res) {
+            // Let the user know the purchase was successful, re-run loadProducts
+            console.log(
+              "\nSuccessfully purchased " +
+                quantity +
+                " " +
+                product.product_name +
+                "'s!"
+            );
+            queryDatabase();
+          }
+        );
       }
     });
 }
+
 
 
 function stockCheck(productId, items) {
